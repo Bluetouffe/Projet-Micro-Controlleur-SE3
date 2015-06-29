@@ -18,6 +18,7 @@ void UARTInit( void );
 void PWMCCP2init( void );
 void captureTimer1Init( void );
 void resetTMR1( void );
+void interruptInit( void );
 void generalInit( void );
 
 #ifdef	__cplusplus

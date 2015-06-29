@@ -8,6 +8,7 @@
 #include "p18f45K20.h"
 #include "sonarModule.h"
 #include "initialisation.h"
+#include "globalVariables.h"
 
 extern void MULT16(void);
 unsigned int arg1, arg2;
@@ -34,31 +35,35 @@ void convertToCentimetres(unsigned int measuredTime , unsigned int * distance)
     *distance >>= 8;
 }
 
-void getMeasure(unsigned int * distance)
+void startMeasure( void )
 {
-    // Variable for number of system TICK measured
-    unsigned int timeMeasured = 0;
-    // Timer1 MSB variable
-    unsigned char timerH = 0;
-    // Timer1 LSB variable
-    unsigned char timerL = 0;
-
     MB1010_EN_PIN = 1;              // Toggle enable measurement PIN of Sonar module
 
     while (MB1010_PWM_PIN == 0)     // While no measure is returned do nothing
     {
-        NOP();
     }
-    MB1010_EN_PIN = 0;              // Input is HIGH, lower trigger pin
+    MB1010_EN_PIN = 0;              // Input is HIGH, measure as started, lower trigger pin
     resetTMR1();                    // When input is HIGH, start timer
 
-    while (MB1010_PWM_PIN == 0)     // Wait until measurement is done
-    {
-        NOP();
-    }
+//    while (MB1010_PWM_PIN == 0)     // Wait until measurement is done
+//    {
+//        NOP();
+//    }
+//
+//    timerH = CCPR1H;                // Read captured value MSB
+//    timerL = CCPR1L;                // Then LSB
+//
+//    timeMeasured = timerH;          //Convert it to 16 uint
+//    timeMeasured <<= 8;
+//    timeMeasured |= timerL;
+//
+//    convertToCentimetres(timeMeasured , distance);
+}
 
-    timerH = CCPR1H;                // Read captured value MSB
-    timerL = CCPR1L;                // Then LSB
+void getMeasure(unsigned int * distance)
+{
+    // Variable for number of system TICK measured
+    unsigned int timeMeasured = 0;
 
     timeMeasured = timerH;          //Convert it to 16 uint
     timeMeasured <<= 8;

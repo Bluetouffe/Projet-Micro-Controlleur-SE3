@@ -16,6 +16,7 @@ extern "C" {
 #define MB1010_EN_PIN   PORTBbits.RB0
 
 void convertToCentimetres(unsigned int measuredTime , unsigned int * distance);
+void startMeasure( void );
 void getMeasure(unsigned int * distance);
 
 #ifdef	__cplusplus

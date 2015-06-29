@@ -102,6 +102,18 @@ void captureTimer1Init( void )
     CCP1CON = 0x04;
 }
 
+void interruptInit( void )
+{
+    CCP1IF = 0;                 // Clear Capture module 1 interrupt flag
+    INTCONbits.PEIE = 1;        // Enable interrupts from Peripheral
+
+    // Maybe not necessary
+    //RCONbits.IPEN = 1;          // Enable priority in interrupts
+
+    PIE1bits.CCP1IE = 1;        // Enable interrupt from Capture module 1
+    PIE1bits.RCIE = 1;          // Enable interrupt from UART Receive
+}
+
 void generalInit( void )
 {
     // Init clock at 1MHz
@@ -114,5 +126,7 @@ void generalInit( void )
     PWMCCP2init();
     // Init UART for 1200b 8N1
     UARTInit();
+    // Init interrupts
+    interruptInit();
 }
 
