@@ -66,4 +66,3 @@ void getMeasure(unsigned int * distance)
 
     convertToCentimetres(timeMeasured , distance);
 }
-

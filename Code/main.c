@@ -13,7 +13,7 @@
 
 void UARTSendMeasure(unsigned int distance)
 {
-    // This messae will be sent first
+    // This message will be sent first
     char *messageTXStart = (char*)"Distance = ";
 
     // This one will be the end of the message
@@ -54,17 +54,33 @@ void main( void )
 {
     generalInit();
 
-    //Variable used to store measured distance
+    // Variable used to store measured distance
     unsigned int distance = 0;
+
+    // Data are sent every numberOfLoopToTransmit loops
+    unsigned int numberOfLoopToTransmit = 10;
+
+    // nulber of Loop, to emit every numberOfLoopToTransmit loops
+    unsigned char numberOfLoop = 0;
 
     // Main loop
     while(1)
     {
         // Request a measure and store returned value in distance
         getMeasure(&distance);
-        // Send this value to UART
-        UARTSendMeasure(distance);
 
+        if (numberOfLoop == numberOfLoopToTransmit)
+        {
+            // Send this value to UART
+            UARTSendMeasure(distance);
+            // Reset Loop counter
+            numberOfLoop = 0;
+        }
+        else
+        {
+            // Increment loop counter
+            numberOfLoop++;
+        }
         // Delay1KTCYx(x) generate a delay of
         // 1000 * x * 1/(Fosc/4)
         // Here, 1000 * 25 * 1/250000 = 100 ms

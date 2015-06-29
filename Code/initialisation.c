@@ -29,6 +29,8 @@ void IOInit( void )
     TRISBbits.RB0 = 0;      // RBO output
     TRISCbits.RC2 = 1;      // RC2 is input
     ANSELHbits.ANS12 = 0;   // RBO digital input buffer deactivate
+    TRISCbits.RC6 = 0; //TX pin set as output
+    TRISCbits.RC7 = 1; //RX pin set as input
 }
 
 void UARTInit( void )
@@ -41,8 +43,8 @@ void UARTInit( void )
 
     unsigned char UARTConfig = 0;
     unsigned char baud = 0;
-    TRISCbits.RC6 = 0; //TX pin set as output
-    TRISCbits.RC7 = 1; //RX pin set as input
+    // TRISCbits.RC6 = 0; //TX pin set as output
+    // TRISCbits.RC7 = 1; //RX pin set as input
 
     UARTConfig = USART_TX_INT_OFF;      // Interrupt on transmit
     UARTConfig &= USART_RX_INT_OFF;     // Interrupt on receive
