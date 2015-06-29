@@ -29,8 +29,12 @@ void IOInit( void )
     TRISBbits.RB0 = 0;      // RBO output
     TRISCbits.RC2 = 1;      // RC2 is input
     ANSELHbits.ANS12 = 0;   // RBO digital input buffer deactivate
-    TRISCbits.RC6 = 0; //TX pin set as output
-    TRISCbits.RC7 = 1; //RX pin set as input
+    TRISCbits.RC6 = 0;      // TX pin set as output
+    TRISCbits.RC7 = 1;      // RX pin set as input
+
+#ifdef DEBUG
+    TRISD = 0;      // Use leds as debug output
+#endif
 }
 
 void UARTInit( void )
@@ -106,12 +110,13 @@ void interruptInit( void )
 {
     CCP1IF = 0;                 // Clear Capture module 1 interrupt flag
     INTCONbits.PEIE = 1;        // Enable interrupts from Peripheral
+    INTCONbits.GIE = 1;         // Enable general interrupts
 
     // Maybe not necessary
     //RCONbits.IPEN = 1;          // Enable priority in interrupts
 
     PIE1bits.CCP1IE = 1;        // Enable interrupt from Capture module 1
-    PIE1bits.RCIE = 1;          // Enable interrupt from UART Receive
+    //PIE1bits.RCIE = 1;          // Enable interrupt from UART Receive
 }
 
 void generalInit( void )
@@ -123,7 +128,7 @@ void generalInit( void )
     // Init CCP1 in capture mode with Timer1
     captureTimer1Init();
     // Init CCP2 for PWM
-    PWMCCP2init();
+    //PWMCCP2init();
     // Init UART for 1200b 8N1
     UARTInit();
     // Init interrupts

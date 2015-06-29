@@ -37,6 +37,8 @@ void convertToCentimetres(unsigned int measuredTime , unsigned int * distance)
 
 void startMeasure( void )
 {
+    flag.captureDone = 0;
+    
     MB1010_EN_PIN = 1;              // Toggle enable measurement PIN of Sonar module
 
     while (MB1010_PWM_PIN == 0)     // While no measure is returned do nothing

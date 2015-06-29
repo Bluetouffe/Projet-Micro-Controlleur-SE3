@@ -11,9 +11,22 @@
 #include "initialisation.h"
 #include "sonarModule.h"
 #include "uart.h"
-#include "interrupts.h"
+//#include "interrupts.h"
 #include "globalVariables.h"
 
+void interrupt ISR(void)
+{
+    if (CCP1IF == 1)                     // Test for Capture interrupt
+    {
+        timerH = CCPR1H;                // Read captured value MSB
+        timerL = CCPR1L;                // Then LSB
+
+        flag.captureDone = 1;
+
+        CCP1IF = 0;                     // Clear Capture1 interrupt flag
+        resetTMR1();
+    }
+}
 
 void main( void )
 {
@@ -31,13 +44,12 @@ void main( void )
     // Main loop
     while(1)
     {
-        
         startMeasure();                          // Request a measure and store returned value in distance
-
+        
         while(flag.captureDone != 1)
         {
         }
-
+        
         getMeasure(&distance);                  // After capture is done, get value
 
         if (numberOfLoop == numberOfLoopToTransmit)
