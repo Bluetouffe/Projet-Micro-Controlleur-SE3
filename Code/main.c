@@ -1,6 +1,6 @@
 /* 
  * File:   main.c
- * Author: Louis
+ * Author: Louis BONICEL
  *
  * Created on 23 juin 2015, 16:50
  */
