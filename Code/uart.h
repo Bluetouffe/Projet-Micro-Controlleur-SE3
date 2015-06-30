@@ -13,6 +13,8 @@ extern "C" {
 #endif
 
 void UARTSendMeasure(unsigned int distance);
+void UARTtreatNewRequest( void );
+void UARTEmptyBuffer( void );
 
 #ifdef	__cplusplus
 }

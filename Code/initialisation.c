@@ -108,14 +108,15 @@ void captureTimer1Init( void )
 void interruptInit( void )
 {
     CCP1IF = 0;                 // Clear Capture module 1 interrupt flag
+    RCIF = 0;                   // Cleat RX interrupt flag
     INTCONbits.PEIE = 1;        // Enable interrupts from Peripheral
     INTCONbits.GIE = 1;         // Enable general interrupts
 
-    // Maybe not necessary
+    // May not be necessary
     //RCONbits.IPEN = 1;          // Enable priority in interrupts
 
     PIE1bits.CCP1IE = 1;        // Enable interrupt from Capture module 1
-    //PIE1bits.RCIE = 1;          // Enable interrupt from UART Receive
+    PIE1bits.RCIE = 1;          // Enable interrupt from UART Receive
 }
 
 void generalInit( void )

@@ -20,9 +20,6 @@ void main( void )
     // Variable used to store measured distance
     unsigned int distance = 0;
 
-    // Data are sent every numberOfLoopToTransmit loops
-    unsigned int numberOfLoopToTransmit = 10;
-
     // nulber of Loop, to emit every numberOfLoopToTransmit loops
     unsigned char numberOfLoop = 0;
 
@@ -31,19 +28,27 @@ void main( void )
     {
         startMeasure();                          // Request a measure and store returned value in distance
 
-        SLEEP();
-        NOP();
+        SLEEP();                                 // Enter IDLE mode
+        NOP();                                   // This instruction is skipped
         
-        getMeasure(&distance);                  // After capture is done, get value
+        getMeasure(&distance);                   // After capture is done, get value
 
-        if (numberOfLoop == numberOfLoopToTransmit)
+        if (flag.newBTRequest == 1)
         {
-            UARTSendMeasure(distance);                  // Send this value to UART
-            numberOfLoop = 0;                           // Reset Loop counter
+            UARTtreatNewRequest();
         }
-        else
+
+        if (flag.enableSendBT == 1)
         {
-            numberOfLoop++;                             // Increment loop counter
+            if (numberOfLoop == timeOfEmission)
+            {
+                UARTSendMeasure(distance);                  // Send this value through UART
+                numberOfLoop = 0;                           // Reset Loop counter
+            }
+            else
+            {
+                numberOfLoop++;                             // Increment loop counter
+            }
         }
         // Delay1KTCYx(x) generate a delay of
         // 1000 * x * 1/(Fosc/4)

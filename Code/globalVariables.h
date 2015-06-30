@@ -12,10 +12,12 @@
 extern "C" {
 #endif
 
+#define sizeOfBuffer 10
+
 volatile near struct {
     unsigned captureDone:1;
-    unsigned bit1:1;
-    unsigned bit2:1;
+    unsigned enableSendBT:1;
+    unsigned newBTRequest:1;
     unsigned bit3:1;
     unsigned bit4:1;
     unsigned bit5:1;
@@ -28,6 +30,11 @@ volatile near struct {
 unsigned char timerH = 0;
 // Timer1 LSB variable
 unsigned char timerL = 0;
+
+unsigned int timeOfEmission = 0;
+
+char bufferBTReceive[sizeOfBuffer];
+char counterStringRXBT = 0;
 
 #ifdef	__cplusplus
 }

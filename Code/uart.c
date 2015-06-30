@@ -1,6 +1,8 @@
 #include "p18f45K20.h"
 #include <usart.h>
 #include "initialisation.h"
+#include "globalVariables.h"
+#include "uart.h"
 
 void UARTSendMeasure(unsigned int distance)
 {
@@ -38,5 +40,41 @@ void UARTSendMeasure(unsigned int distance)
     else
     {
         putsUSART(errorDistanceMessage);
+    }
+}
+
+void UARTtreatNewRequest( void )
+{
+    flag.newBTRequest = 0;
+    switch ( bufferBTReceive[0] )       // State machine for parameters
+    {
+        case 0x74:                      // Time between two BT emission "t"
+            timeOfEmission = (bufferBTReceive[2] - 48); // 48 = ASCII 0
+            UARTEmptyBuffer();
+            LATD &= 0b10000000;
+            break;
+        case 0x73: // "s"
+            flag.enableSendBT = ~flag.enableSendBT;
+            LATDbits.LATD0 = flag.enableSendBT;
+            UARTEmptyBuffer();
+            LATD &= 0b01000000;
+            break;
+            
+        default:
+            flag.enableSendBT = 0;
+            timeOfEmission = 10;
+            UARTEmptyBuffer();
+            LATD &= 0b00100000;
+            break;
+    }
+}
+
+void UARTEmptyBuffer( void )
+{
+    char i = 0;
+
+    for (i = 0 ; i < sizeOfBuffer ; i++)
+    {
+        bufferBTReceive[i] = 0;
     }
 }
