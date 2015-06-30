@@ -21,7 +21,8 @@
 
 void ClockInit( void )
 {
-    OSCCON = 0b00110000;    // Clock 1MHz
+    OSCCONbits.IRCF = 0x03;    // Clock 1MHz
+    OSCCONbits.IDLEN = 1;      // Enter IDLE when SLEEP() is called
 }
 
 void IOInit( void )
@@ -32,9 +33,7 @@ void IOInit( void )
     TRISCbits.RC6 = 0;      // TX pin set as output
     TRISCbits.RC7 = 1;      // RX pin set as input
 
-#ifdef DEBUG
     TRISD = 0;      // Use leds as debug output
-#endif
 }
 
 void UARTInit( void )
@@ -116,7 +115,7 @@ void interruptInit( void )
     //RCONbits.IPEN = 1;          // Enable priority in interrupts
 
     PIE1bits.CCP1IE = 1;        // Enable interrupt from Capture module 1
-    //PIE1bits.RCIE = 1;          // Enable interrupt from UART Receive
+    PIE1bits.RCIE = 1;          // Enable interrupt from UART Receive
 }
 
 void generalInit( void )

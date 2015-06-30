@@ -46,20 +46,6 @@ void startMeasure( void )
     }
     MB1010_EN_PIN = 0;              // Input is HIGH, measure as started, lower trigger pin
     resetTMR1();                    // When input is HIGH, start timer
-
-//    while (MB1010_PWM_PIN == 0)     // Wait until measurement is done
-//    {
-//        NOP();
-//    }
-//
-//    timerH = CCPR1H;                // Read captured value MSB
-//    timerL = CCPR1L;                // Then LSB
-//
-//    timeMeasured = timerH;          //Convert it to 16 uint
-//    timeMeasured <<= 8;
-//    timeMeasured |= timerL;
-//
-//    convertToCentimetres(timeMeasured , distance);
 }
 
 void getMeasure(unsigned int * distance)
@@ -70,6 +56,6 @@ void getMeasure(unsigned int * distance)
     timeMeasured = timerH;          //Convert it to 16 uint
     timeMeasured <<= 8;
     timeMeasured |= timerL;
-
+    //LATD = timerH;
     convertToCentimetres(timeMeasured , distance);
 }
