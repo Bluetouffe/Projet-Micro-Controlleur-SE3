@@ -46,25 +46,34 @@ void UARTSendMeasure(unsigned int distance)
 void UARTtreatNewRequest( void )
 {
     flag.newBTRequest = 0;
+    putsUSART((char*)"\r\n");
     switch ( bufferBTReceive[0] )       // State machine for parameters
     {
         case 0x74:                      // Time between two BT emission "t"
-            timeOfEmission = (bufferBTReceive[2] - 48); // 48 = ASCII 0
+            timeOfEmission = (bufferBTReceive[1] - 48); // 48 = ASCII 0
+            if (timeOfEmission > 7)
+            {
+                timeOfEmission = 7;
+            }
+            numberOfEmission = 1 << timeOfEmission;
+            LATD = numberOfEmission;
             UARTEmptyBuffer();
-            LATD &= 0b10000000;
+            flag.enableSendBT = 1;
             break;
+        case 0x53: // "S"
+            flag.enableSendBT = 1;
+            UARTEmptyBuffer();
+            break;
+
         case 0x73: // "s"
-            flag.enableSendBT = ~flag.enableSendBT;
-            LATDbits.LATD0 = flag.enableSendBT;
+            flag.enableSendBT = 0;
             UARTEmptyBuffer();
-            LATD &= 0b01000000;
             break;
-            
+
         default:
             flag.enableSendBT = 0;
             timeOfEmission = 10;
             UARTEmptyBuffer();
-            LATD &= 0b00100000;
             break;
     }
 }

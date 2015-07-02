@@ -19,6 +19,7 @@ void main( void )
     generalInit();
     // Variable used to store measured distance
     unsigned int distance = 0;
+    unsigned int moyenne = 0;
 
     // nulber of Loop, to emit every numberOfLoopToTransmit loops
     unsigned char numberOfLoop = 0;
@@ -40,13 +41,16 @@ void main( void )
 
         if (flag.enableSendBT == 1)
         {
-            if (numberOfLoop == timeOfEmission)
+            if (numberOfLoop == numberOfEmission)
             {
+                moyenne >>= timeOfEmission;
                 UARTSendMeasure(distance);                  // Send this value through UART
                 numberOfLoop = 0;                           // Reset Loop counter
+                moyenne = 0;
             }
             else
             {
+                moyenne += distance;
                 numberOfLoop++;                             // Increment loop counter
             }
         }

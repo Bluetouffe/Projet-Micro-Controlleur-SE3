@@ -30,26 +30,17 @@ void interrupt ISR(void)
         bufferBTReceive[counterStringRXBT] = RCREG;     // Read RX REG
         putcUSART(bufferBTReceive[counterStringRXBT]);
 
-        while (bufferBTReceive[counterStringRXBT] == 0x0D
-                || counterStringRXBT == sizeOfBuffer) // If enter is pressed
+        if (bufferBTReceive[counterStringRXBT] != 0x0D && counterStringRXBT != sizeOfBuffer) // If enter is pressed
         {
             counterStringRXBT++;                        // Else increment counter
             bufferBTReceive[counterStringRXBT] = RCREG;
         }
-        flag.enableSendBT = 1;
-        flag.newBTRequest = 1;
-        counterStringRXBT = 0;
-//        if (bufferBTReceive[counterStringRXBT] == 0x0D
-//                || counterStringRXBT == sizeOfBuffer) // If enter is pressed
-//        {
-//            flag.enableSendBT = 1;                      // Enable TX
-//            flag.newBTRequest = 1;                      // New BT request is made
-//            counterStringRXBT = 0;                      // Reset counter
-//        }
-//        else
-//        {
-//            counterStringRXBT++;                        // Else increment counter
-//        }
+        else
+        {
+            flag.enableSendBT = 1;
+            flag.newBTRequest = 1;
+            counterStringRXBT = 0;
+        }
         
         RCIF = 0;                                       // Reset interrupt flag
     }

@@ -18,6 +18,7 @@
 #include "p18f45K20.h"
 #include <usart.h>
 #include "initialisation.h"
+#include "globalVariables.h"
 
 void ClockInit( void )
 {
@@ -58,6 +59,8 @@ void UARTInit( void )
 
     baud = 25;                          // Refer to doc
     OpenUSART(UARTConfig,baud);
+
+    flag.enableSendBT = 1;
 }
 
 void PWMCCP2init( void )

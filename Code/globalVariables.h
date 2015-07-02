@@ -31,7 +31,8 @@ unsigned char timerH = 0;
 // Timer1 LSB variable
 unsigned char timerL = 0;
 
-unsigned int timeOfEmission = 0;
+unsigned int timeOfEmission = 3;
+unsigned int numberOfEmission = 8;
 
 char bufferBTReceive[sizeOfBuffer];
 char counterStringRXBT = 0;
