@@ -4,6 +4,7 @@
 #include "globalVariables.h"
 #include "uart.h"
 
+
 void UARTSendMeasure(unsigned int distance)
 {
     // This message will be sent first
@@ -15,8 +16,10 @@ void UARTSendMeasure(unsigned int distance)
 
     // String used for storing distance ASCII value
     // Initialized with 48, ASCII code of 0
-    char messageDistance[4] = {48 , 48 , 48 , 0};
-
+    messageDistance[0] = 48;
+    messageDistance[1] = 48;
+    messageDistance[2] = 48;
+    messageDistance[3] = 0x00;
     // Error message
     char *errorDistanceMessage = (char*)"Error measurement\n\r";
 

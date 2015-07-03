@@ -19,6 +19,7 @@
 #include <usart.h>
 #include "initialisation.h"
 #include "globalVariables.h"
+#include "oled.h"
 
 void ClockInit( void )
 {
@@ -32,6 +33,9 @@ void IOInit( void )
     PORTB = 0x00;           // PORT B is 0        
     TRISD = 0x00;           // Use leds as debug output
     PORTD = 0x00;
+
+    TRISCbits.RC3 = 1;      // SCL
+    TRISCbits.RC4 = 1;      // SDA
 
     TRISCbits.RC2 = 1;      // RC2 is input
     ANSELHbits.ANS12 = 0;   // RBO digital input buffer deactivate
@@ -131,6 +135,8 @@ void generalInit( void )
     ClockInit();
     // Set IO pins to desired configuration
     IOInit();
+    // Init I2C
+    I2CInit();
     // Init CCP1 in capture mode with Timer1
     captureTimer1Init();
     // Init UART for 1200b 8N1
@@ -139,5 +145,7 @@ void generalInit( void )
     interruptInit();
     // Init CCP2 for PWM
     PWMInit();
+    // Init Oled
+    OLED_Init();
 }
 

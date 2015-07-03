@@ -34,10 +34,12 @@ unsigned char timerL = 0;
 unsigned int timeOfEmission = 3;
 unsigned int numberOfEmission = 8;
 
- unsigned int signal_pwm = 1;
+unsigned int signal_pwm = 1;
 
 char bufferBTReceive[sizeOfBuffer];
 char counterStringRXBT = 0;
+
+char messageDistance[4];
 
 #ifdef	__cplusplus
 }

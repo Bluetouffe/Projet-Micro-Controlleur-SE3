@@ -6,9 +6,6 @@
 
 void I2CInit(void)
 {
-    TRISCbits.RC3 = 1; // SCL
-    TRISCbits.RC4 = 1; // SDA
-
     SSPCON1 = 0b00101000; // Control register 
     // Enables the serial port and configures the SDA and SCL pins as the serial port pins
     // I2C Master mode, clock = FOSC/(4 * (SSPADD + 1))

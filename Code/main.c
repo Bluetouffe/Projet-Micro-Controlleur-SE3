@@ -13,10 +13,23 @@
 #include "uart.h"
 #include "interrupts.h"
 #include "globalVariables.h"
+#include "oled.h"
 
 void main( void )
 {
+    unsigned char i = 0;
+
     generalInit();
+    OLED_bmp(LOGO);
+    Delay1KTCYx(1);
+    OLED_rscroll();
+    
+    for ( i = 0 ; i < 7 ; i++)
+        Delay10KTCYx(25);
+
+    OLED_stopscroll();
+    OLED_clear();
+
     // Variable used to store measured distance
     unsigned int distance = 0;
     //unsigned int moyenne = 0;
@@ -28,6 +41,8 @@ void main( void )
     // Main loop
     while(1)
     {
+        OLED_string((char *)"Distance : " , 1 , 1 , FONT_8X16);
+        OLED_string((char *)"cm" , 100 , 1 , FONT_8X16);
         startMeasure();                          // Request a measure and store returned value in distance
 
         SLEEP();                                 // Enter IDLE mode
@@ -56,6 +71,7 @@ void main( void )
             {
                 //moyenne >>= timeOfEmission;
                 UARTSendMeasure(distance);                  // Send this value through UART
+                OLED_string(messageDistance , 60 , 1 , FONT_8X16);
                 numberOfLoop = 0;                           // Reset Loop counter
                 //moyenne = 0;
             }
