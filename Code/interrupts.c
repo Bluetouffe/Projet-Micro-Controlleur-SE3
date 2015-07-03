@@ -19,7 +19,6 @@ void interrupt ISR(void)
         TMR1L = 0x00;
 
         T1CONbits.TMR1ON=1;         // Start timer1
-        //resetTMR1();
     }
 
     if (RCIF == 1)                                      // Interrupt from UART RX
@@ -43,5 +42,28 @@ void interrupt ISR(void)
         }
         
         RCIF = 0;                                       // Reset interrupt flag
+    }
+
+    if (INTCONbits.TMR0IF == 1)
+    {
+        INTCONbits.TMR0IF = 0;	//efface le drapeau d'IT
+        if (signal_pwm == 0)
+        {
+            LATD = 0x0F;
+            TMR0ON = 0;                 // Disable timer 0
+            signal_pwm = 1;
+            TMR0H = 0xFF;         //val distance fixe ON 200ms
+            TMR0L = 0xF0;         //val distance fixe ON 200ms
+            TMR0ON = 1;                 // Enable timer 0
+        }
+        else
+        {
+            LATD = 0xF0;
+            TMR0ON = 0;                 // Disable le timer 0
+            signal_pwm = 0;
+            TMR0H = 0xFF;         //val distance louis
+            TMR0L = 0xF0;
+            TMR0ON = 1;                 // Disable timer 0
+        }
     }
 }

@@ -22,19 +22,21 @@
 
 void ClockInit( void )
 {
-    OSCCONbits.IRCF = 0x03;    // Clock 1MHz
+    OSCCON = 0x30;    // Clock 1MHz
     OSCCONbits.IDLEN = 1;      // Enter IDLE when SLEEP() is called
 }
 
 void IOInit( void )
 {
-    TRISBbits.RB0 = 0;      // RBO output
+    TRISB = 0x00;           // PORT B as Output
+    PORTB = 0x00;           // PORT B is 0        
+    TRISD = 0x00;           // Use leds as debug output
+    PORTD = 0x00;
+
     TRISCbits.RC2 = 1;      // RC2 is input
     ANSELHbits.ANS12 = 0;   // RBO digital input buffer deactivate
     TRISCbits.RC6 = 0;      // TX pin set as output
-    TRISCbits.RC7 = 1;      // RX pin set as input
-
-    TRISD = 0;      // Use leds as debug output
+    TRISCbits.RC7 = 1;      // RX pin set as input  
 }
 
 void UARTInit( void )
@@ -63,21 +65,21 @@ void UARTInit( void )
     flag.enableSendBT = 1;
 }
 
-void PWMCCP2init( void )
+void PWMInit( void )
 {
-    // L.Latorre
+    // Timer 0
+    T0CON = 0b00000111;                 // config timer 0
+    INTCONbits.TMR0IF = 0;              // Reset Timer0 Interrupt flag
+    TMR0H = 0b11111111;                 // nombre de comptage pour periode off val distance
+    TMR0L = 0b11111110;                 // nombre de comptage pour periode off val distance
+
     // PWM output setup (CCP2 on RB3)
-    // --------------------------------------------------------------------
-    CCP2CON = 0b00001111;       // CCP2 as PWM mode, LSB's set to 0
-    PR2 = 0xFF;                 // Initial Period
-    CCPR2L = 0x1F;              // Initial duty cycle (MSB's)
-    PIR1bits.TMR2IF = 0;        // Clears Timer 2 interrupt flag
-    T2CON = 0b00000000;         // Timer 2 prescaler is 1
-    T2CONbits.TMR2ON = 1;       // Launch Timer 2
-    while (PIR1bits.TMR2IF==0);
-    {
-        TRISBbits.RB3 = 0;      // Enable RB3 output
-    }
+    CCP2CON = 0b00001111;               // Enable PWM
+    PR2 = 0b00100011;                   // Initial frequency of 440Hz.
+    CCPR2L = 0x0F;                      // Volume buzzer
+    T2CON = 0b00000110;                 // TMR2=> prescaler = 4
+                                        // f = (TMR2)*4*TOSC*PR2 = 435Hz
+    T2CONbits.TMR2ON = 0;               // Stop Timer 2
 }
 
 void resetTMR1( void )
@@ -114,9 +116,10 @@ void interruptInit( void )
     RCIF = 0;                   // Cleat RX interrupt flag
     INTCONbits.PEIE = 1;        // Enable interrupts from Peripheral
     INTCONbits.GIE = 1;         // Enable general interrupts
-
+    INTCONbits.TMR0IE = 1;      // Enable interrupts from Timer 0
+    
     // May not be necessary
-    //RCONbits.IPEN = 1;          // Enable priority in interrupts
+    // RCONbits.IPEN = 1;          // Enable priority in interrupts
 
     PIE1bits.CCP1IE = 1;        // Enable interrupt from Capture module 1
     PIE1bits.RCIE = 1;          // Enable interrupt from UART Receive
@@ -130,11 +133,11 @@ void generalInit( void )
     IOInit();
     // Init CCP1 in capture mode with Timer1
     captureTimer1Init();
-    // Init CCP2 for PWM
-    //PWMCCP2init();
     // Init UART for 1200b 8N1
     UARTInit();
     // Init interrupts
     interruptInit();
+    // Init CCP2 for PWM
+    PWMInit();
 }
 

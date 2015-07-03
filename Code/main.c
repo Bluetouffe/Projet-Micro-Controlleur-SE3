@@ -19,11 +19,12 @@ void main( void )
     generalInit();
     // Variable used to store measured distance
     unsigned int distance = 0;
-    unsigned int moyenne = 0;
+    //unsigned int moyenne = 0;
 
     // nulber of Loop, to emit every numberOfLoopToTransmit loops
     unsigned char numberOfLoop = 0;
-
+    T0CONbits.TMR0ON = 1;               // Enable timer 0
+    signal_pwm = 1;
     // Main loop
     while(1)
     {
@@ -39,24 +40,32 @@ void main( void )
             UARTtreatNewRequest();
         }
 
+        if (signal_pwm == 1)
+        {
+            CCP2CON = 0b00000111; // Enable PWM mode
+        }
+        else
+        {
+            CCP2CON = 0b00000000; // Disable PWM mode
+        }
+
+
         if (flag.enableSendBT == 1)
         {
             if (numberOfLoop == numberOfEmission)
             {
-                moyenne >>= timeOfEmission;
+                //moyenne >>= timeOfEmission;
                 UARTSendMeasure(distance);                  // Send this value through UART
                 numberOfLoop = 0;                           // Reset Loop counter
-                moyenne = 0;
+                //moyenne = 0;
             }
             else
             {
-                moyenne += distance;
+                //moyenne += distance;
                 numberOfLoop++;                             // Increment loop counter
             }
         }
-        // Delay1KTCYx(x) generate a delay of
-        // 1000 * x * 1/(Fosc/4)
-        // Here, 1000 * 25 * 1/250000 = 100 ms
+
         Delay1KTCYx( 25 );
     }
 }
