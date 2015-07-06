@@ -37,12 +37,10 @@ void main( void )
          
         getMeasure(&distance);                   // After capture is done, get value
 
-        if (flag.newBTRequest == 1)
-        {
+        if (flag.newBTRequest)
             UARTtreatNewRequest();
-        }
 
-        CCP2CON = signal_pwm; // Disable PWM mode
+        CCP2CON = signal_pwm;
 
         if (numberOfLoop == 8)
         {
