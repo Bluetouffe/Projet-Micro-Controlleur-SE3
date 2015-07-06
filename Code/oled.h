@@ -5,15 +5,12 @@
 extern "C" {
 #endif
 
-/* The first byte transmitted contains the slave address of the
- * receiving device (7 bits) and the Read/Write (R/W) bit
- * In this case, the R/W bit will be logic ?0?*/
-
-
 #define OLED_WIDTH             128
 #define OLED_HEIGHT            64
+//#define OLED_INTERNAL_VCC		1
+#define OLED_EXTERNAL_VCC		1	   
 
-#define I2C_ADDRESS            0x3C<<1 // address = 0x3C and RW = 0 => 0x78
+#define I2C_ADDRESS            0x3C<<1 // first byte transmitted contains the slave address = 0x3C (7 bits) and the bit RW = 0 (only write) => 0x78
 #define I2C_CMD                0x00
 #define I2C_DATA               0x40
 
@@ -51,24 +48,22 @@ extern "C" {
 #define FONT_8X16   2
 #define LOGO        3
 
-void I2CInit(void);
-
+void I2C_Init(void);
 void OLED_Init(void);
 void OLED_command(char command);
 void OLED_data(char data);
-void OLED_write();
-void OLED_clear();
-void OLED_invert();
-void OLED_rscroll();
-void OLED_lscroll();
-void OLED_stopscroll();
-void OLED_pixel(unsigned char x, unsigned char y, char color);
+void OLED_write(void);
+void OLED_clear(void);
+void OLED_invert(void);
+void OLED_rscroll(char start, char stop);
+void OLED_lscroll(char start, char stop);
+void OLED_stopscroll(void);
 void OLED_char(char character, unsigned char font);
 void OLED_string(char* string, unsigned char x, unsigned char y, unsigned char font);
 void OLED_pos(char x, char y);
 void OLED_bmp(char sel);
 
-const unsigned char FONT_5x8[][5] =
+static const unsigned char FONT_5x8[][5] =
 {                                    // ASCI  CHAR     LINE
   { 0x00, 0x00, 0x00, 0x00, 0x00 },  // 20    SPACE     0
   { 0x00, 0x00, 0x5f, 0x00, 0x00 },  // 21      !       0
@@ -167,7 +162,7 @@ const unsigned char FONT_5x8[][5] =
   { 0x10, 0x08, 0x08, 0x10, 0x08 },  // 7e      ~       93
 };
 
-const unsigned char FONT_8x16[][16] =
+static const unsigned char FONT_8x16[][16] =
 {                                                                                  //  CHAR   LINE
 {0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00}, //  SPACE    0
 {0x00,0x00,0x00,0x00,0x78,0x00,0xFC,0x09,0xFC,0x09,0x78,0x00,0x00,0x00,0x00,0x00}, //   !       0
@@ -266,7 +261,7 @@ const unsigned char FONT_8x16[][16] =
 {0x10,0x08,0x08,0x10,0x08,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00},//    ~       93
 };
 
-const unsigned char FONT_LOGO [] = {
+static const unsigned char FONT_LOGO [] = {
 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x80, 0x80, 0x80, 0x80, 0x80, 0xC0,
 0xC0, 0xC0, 0xC0, 0xC0, 0x80, 0x80, 0x80, 0x80, 0x80, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
