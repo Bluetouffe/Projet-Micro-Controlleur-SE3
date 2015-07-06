@@ -3,15 +3,44 @@
 #include "initialisation.h"
 #include "globalVariables.h"
 
+//void interrupt high_priority HIGH_ISR (void)
+//{
+//    if (INTCONbits.TMR0IF == 1)
+//    {
+//        INTCONbits.TMR0IF = 0;	//efface le drapeau d'IT
+//        if (signal_pwm == 0)
+//        {
+//            TMR0ON = 0;                 // Disable timer 0
+//            signal_pwm = 1;
+//            TMR0H = 0xFF;         //val distance fixe ON 200ms
+//            TMR0L = 0x63;         //val distance fixe ON 200ms
+//            TMR0ON = 1;                 // Enable timer 0
+//        }
+//        else
+//        {
+//            TMR0ON = 0;                 // Disable le timer 0
+//            signal_pwm = 0;
+//            TMR0H = 0xFF;         //val distance louis
+//            TMR0L = 0xF0;
+//            TMR0ON = 1;                 // Disable timer 0
+//        }
+//    }
+//}
+
 void interrupt ISR(void)
 {
-    if (CCP1IF == 1)                     // Test for Capture interrupt
+//    if (CCP1IF == 1)                     // Test for Capture interrupt
+    if (TMR3IF == 1)
     {
+        PIR2bits.TMR3IF = 0;
+        TMR3H = 0xD8;
+        TMR3L = 0xF0;
+        
         timerH = CCPR1H;                // Read captured value MSB
         timerL = CCPR1L;                // Then LSB
 
         flag.captureDone = 1;
-        CCP1IF = 0;                     // Clear Capture1 interrupt flag
+        //CCP1IF = 0;                     // Clear Capture1 interrupt flag
 
         T1CONbits.TMR1ON=0;         // Stop timer1
 
@@ -40,8 +69,6 @@ void interrupt ISR(void)
             flag.newBTRequest = 1;
             counterStringRXBT = 0;
         }
-        
-        RCIF = 0;                                       // Reset interrupt flag
     }
 
     if (INTCONbits.TMR0IF == 1)
@@ -49,18 +76,16 @@ void interrupt ISR(void)
         INTCONbits.TMR0IF = 0;	//efface le drapeau d'IT
         if (signal_pwm == 0)
         {
-            LATD = 0x0F;
             TMR0ON = 0;                 // Disable timer 0
-            signal_pwm = 1;
+            signal_pwm = 0x0F;
             TMR0H = 0xFF;         //val distance fixe ON 200ms
-            TMR0L = 0xF0;         //val distance fixe ON 200ms
+            TMR0L = 0x63;         //val distance fixe ON 200ms
             TMR0ON = 1;                 // Enable timer 0
         }
         else
         {
-            LATD = 0xF0;
             TMR0ON = 0;                 // Disable le timer 0
-            signal_pwm = 0;
+            signal_pwm = 0x00;
             TMR0H = 0xFF;         //val distance louis
             TMR0L = 0xF0;
             TMR0ON = 1;                 // Disable timer 0

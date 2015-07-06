@@ -12,8 +12,8 @@
 extern "C" {
 #endif
 
-void interrupt _isr (void);
-
+//void interrupt high_priority HIGH_ISR (void);
+void interrupt _ISR (void);
 
 #ifdef	__cplusplus
 }
