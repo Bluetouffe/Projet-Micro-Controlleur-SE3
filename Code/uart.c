@@ -4,7 +4,6 @@
 #include "globalVariables.h"
 #include "uart.h"
 
-<<<<<<< HEAD
 void createString( unsigned int distance )
 {
     // String used for storing distance ASCII value
@@ -23,9 +22,6 @@ void createString( unsigned int distance )
     }
 
 }
-=======
->>>>>>> parent of 7e0d29b... Oled Working
-
 void UARTSendMeasure(unsigned int distance)
 {
     // This message will be sent first
