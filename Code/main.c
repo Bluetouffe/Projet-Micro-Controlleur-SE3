@@ -20,8 +20,6 @@ void main( void )
     unsigned char i = 0;
 
     generalInit();
-
-    Delay1KTCYx(1);
     OLED_bmp(LOGO);
     Delay1KTCYx(1);
     OLED_rscroll(0,127);
@@ -31,8 +29,6 @@ void main( void )
 
     OLED_stopscroll();
     OLED_clear();
-    OLED_string((char *)"Distance : " , 1 , 1 , FONT_8X16);
-    OLED_string((char *)"cm" , 100 , 3 , FONT_8X16);
 
     // Variable used to store measured distance
     unsigned int distance = 0;
@@ -45,6 +41,8 @@ void main( void )
     // Main loop
     while(1)
     {
+        OLED_string((char *)"Distance : " , 1 , 1 , FONT_8X16);
+        OLED_string((char *)"cm" , 100 , 1 , FONT_8X16);
         startMeasure();                          // Request a measure and store returned value in distance
 
         SLEEP();                                 // Enter IDLE mode
@@ -67,13 +65,13 @@ void main( void )
         }
 
 
-        //if (flag.enableSendBT == 1)
-        //{
+        if (flag.enableSendBT == 1)
+        {
             if (numberOfLoop == numberOfEmission)
             {
                 //moyenne >>= timeOfEmission;
                 UARTSendMeasure(distance);                  // Send this value through UART
-                OLED_string(messageDistance , 50 , 3 , FONT_8X16);
+                OLED_string(messageDistance , 60 , 1 , FONT_8X16);
                 numberOfLoop = 0;                           // Reset Loop counter
                 //moyenne = 0;
             }
@@ -82,7 +80,7 @@ void main( void )
                 //moyenne += distance;
                 numberOfLoop++;                             // Increment loop counter
             }
-        //}
+        }
 
         Delay1KTCYx( 25 );
     }

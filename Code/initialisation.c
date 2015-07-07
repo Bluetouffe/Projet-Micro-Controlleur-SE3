@@ -126,7 +126,7 @@ void interruptInit( void )
     // RCONbits.IPEN = 1;          // Enable priority in interrupts
 
     PIE1bits.CCP1IE = 1;        // Enable interrupt from Capture module 1
-    //PIE1bits.RCIE = 1;          // Enable interrupt from UART Receive
+    PIE1bits.RCIE = 1;          // Enable interrupt from UART Receive
 }
 
 void generalInit( void )
