@@ -7,13 +7,18 @@
 void createString( unsigned int distance )
 {
     // String used for storing distance ASCII value
-    
+    // Initialized with 48, ASCII code of 0
+    messageDistance[0] = 48;
+    messageDistance[1] = 48;
+    messageDistance[2] = 48;
+    messageDistance[3] = 0x00;
+
     if (distance < 1000)
     {
-        messageDistance[0] = tabValeurASCII[distance][0];
-        messageDistance[1] = tabValeurASCII[distance][1];
-        messageDistance[2] = tabValeurASCII[distance][2];
-        messageDistance[3] = 0;
+        // Create a string composed of Hundreds, Tens and Units
+        messageDistance[0] += distance / 100;
+        messageDistance[1] += (distance - ((messageDistance[0] - 48) * 100)) / 10;
+        messageDistance[2] += distance % 10;
     }
 
 }
@@ -58,7 +63,7 @@ void UARTtreatNewRequest( void )
     putsUSART((char*)"\r\n");
     switch ( bufferBTReceive[0] )       // State machine for parameters
     {
-        /*case 0x74:                      // Time between two BT emission "t"
+        case 0x74:                      // Time between two BT emission "t"
             timeOfEmission = (bufferBTReceive[1] - 48); // 48 = ASCII 0
             if (timeOfEmission > 7)
             {
@@ -68,7 +73,7 @@ void UARTtreatNewRequest( void )
             LATD = numberOfEmission;
             UARTEmptyBuffer();
             flag.enableSendBT = 1;
-            break;*/
+            break;
         case 0x53: // "S"
             flag.enableSendBT = 1;
             UARTEmptyBuffer();

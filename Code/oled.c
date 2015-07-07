@@ -272,7 +272,7 @@ void OLED_rscroll(char start, char stop)
     OLED_command(stop); // end page
     OLED_command(0X00);
     OLED_command(0XFF);
-	OLED_command(0X2F); // activate scroll
+    OLED_command(0X2F); // activate scroll
 }
 
 void OLED_lscroll(char start, char stop)

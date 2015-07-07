@@ -86,8 +86,8 @@ void interrupt ISR(void)
         {
             TMR0ON = 0;                 // Disable le timer 0
             signal_pwm = 0x00;
-            TMR0H = 0xFF;         //val distance louis
-            TMR0L = 0xF0;
+            TMR0H = 0x11111111;         //val distance louis
+            TMR0L = 0x11110000;
             TMR0ON = 1;                 // Disable timer 0
         }
     }

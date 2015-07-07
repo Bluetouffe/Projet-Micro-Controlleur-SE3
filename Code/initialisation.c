@@ -30,7 +30,7 @@ void ClockInit( void )
 void IOInit( void )
 {
     TRISB = 0x00;           // PORT B as Output
-    PORTB = 0x00;           // PORT B is 0        
+    PORTB = 0x00;           // PORT B is 0
     TRISD = 0x00;           // Use leds as debug output
     PORTD = 0x00;
 
@@ -40,7 +40,7 @@ void IOInit( void )
     TRISCbits.RC2 = 1;      // RC2 is input
     ANSELHbits.ANS12 = 0;   // RBO digital input buffer deactivate
     TRISCbits.RC6 = 0;      // TX pin set as output
-    TRISCbits.RC7 = 1;      // RX pin set as input  
+    TRISCbits.RC7 = 1;      // RX pin set as input
 }
 
 void UARTInit( void )
@@ -78,28 +78,12 @@ void PWMInit( void )
     TMR0L = 0b11111110;                 // nombre de comptage pour periode off val distance
 
     // PWM output setup (CCP2 on RB3)
-    CCP2CON = 0b00001111;               // Disable PWM
+    CCP2CON = 0b00001111;               // Enable PWM
     PR2 = 0b00100011;                   // Initial frequency of 440Hz.
     CCPR2L = 0x0F;                      // Volume buzzer
-    PIR1bits.TMR2IF = 0;
     T2CON = 0b00000110;                 // TMR2=> prescaler = 4
                                         // f = (TMR2)*4*TOSC*PR2 = 435Hz
-    T2CONbits.TMR2ON = 1;               // Start Timer 2
-
-    while (PIR1bits.TMR2IF == 0);
-    
-    TRISBbits.RB3 = 0; // Enable RB3 output
-    CCP2CON = 0x00;
-}
-
-void resetTMR3( void )
-{
-    T3CONbits.TMR3ON=0;         // Stop timer1
-
-    TMR3H = 0xD8;
-    TMR3L = 0xF0;
-
-    T3CONbits.TMR3ON=1;         // Start timer1
+    T2CONbits.TMR2ON = 0;               // Stop Timer 2
 }
 
 void resetTMR1( void )
@@ -130,38 +114,19 @@ void captureTimer1Init( void )
     CCP1CON = 0x04;
 }
 
-void Timer3Init( void )
-{
-  T3CON	= 0x01;
-  PIR2bits.TMR3IF = 0;
-  TMR3H	= 0xD8;
-  TMR3L	= 0xF0;
-
-  INTCON = 0xC0;
-
-  resetTMR3();
-}
-
 void interruptInit( void )
 {
-    //RCONbits.IPEN = 1;          // Enable priority in interrupts
     CCP1IF = 0;                 // Clear Capture module 1 interrupt flag
     RCIF = 0;                   // Cleat RX interrupt flag
     INTCONbits.PEIE = 1;        // Enable interrupts from Peripheral
     INTCONbits.GIE = 1;         // Enable general interrupts
-    //INTCONbits.GIEL = 1;         // Enable general interrupts
-    //INTCONbits.GIEH = 1;
     INTCONbits.TMR0IE = 1;      // Enable interrupts from Timer 0
-    PIE2bits.TMR3IE = 1;        // Enable interrupts from Timer 3
-    //INTCON2bits.TMR0IP = 1;     // High pririty interrupt from Timer 0
 
-    PIE1bits.CCP1IE = 0;        // Enable interrupt from Capture module 1
-    PIE1bits.RCIE = 1;          // Enable interrupt from UART Receive
-}
+    // May not be necessary
+    // RCONbits.IPEN = 1;          // Enable priority in interrupts
 
-void watchDogInit( void )
-{
-    
+    PIE1bits.CCP1IE = 1;        // Enable interrupt from Capture module 1
+    //PIE1bits.RCIE = 1;          // Enable interrupt from UART Receive
 }
 
 void generalInit( void )
@@ -171,11 +136,9 @@ void generalInit( void )
     // Set IO pins to desired configuration
     IOInit();
     // Init I2C
-    I2CInit();
+    I2C_Init();
     // Init CCP1 in capture mode with Timer1
     captureTimer1Init();
-    // Init for Timer 3
-    Timer3Init();
     // Init UART for 1200b 8N1
     UARTInit();
     // Init interrupts
@@ -184,23 +147,4 @@ void generalInit( void )
     PWMInit();
     // Init Oled
     OLED_Init();
-
-
-    OLED_clear();
-    Delay1KTCYx(1);
-    OLED_bmp(LOGO);
-    Delay1KTCYx(1);
-    OLED_rscroll();
-
-    unsigned char i = 0;
-
-    for ( i = 0 ; i < 7 ; i++)
-        Delay10KTCYx(25);
-
-    OLED_stopscroll();
-    OLED_clear();
-    OLED_string((char *)"Distance : " , 1 , 1 , FONT_8X16);
-    OLED_string((char *)"cm" , 100 , 3 , FONT_8X16);
-
-    watchDogInit();
 }
