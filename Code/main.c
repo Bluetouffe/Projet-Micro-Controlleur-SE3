@@ -51,7 +51,11 @@ void main( void )
                 {
                     createString(moyenneFinale);
                 }
-                OLED_string(messageDistance , 50 , 3 , FONT_8X16);
+
+                OLED_clear();
+                OLED_string(messageDistance,0,0,FONT_NUMBERS_24X40);
+                OLED_pos(distance/4,0); // pour la voiture x de 0 à 65
+                OLED_bmp(CAR);
                 
                 //numberOfLoop = 0;                           // Reset Loop counter
                 moyenne = 0;
