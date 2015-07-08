@@ -180,6 +180,20 @@ void OLED_char(char character, unsigned char font)
         
         I2CStop();
     }
+    
+    else if(font == FONT_ARIAL_21X32)
+    {
+    	I2CStart();
+        I2CSend(I2C_ADDRESS); // Send slave address
+        I2CSend(I2C_DATA); // Send data incomming
+
+        for(i=0; i < 32; i++)
+        {
+            I2CSend(FONT_ARIAL_21x32[(character - 0x30)*21+i]); // only number
+        }
+     
+        I2CStop();
+    }
 }
 
 void OLED_string(char* string, unsigned char x, unsigned char y, unsigned char font)
@@ -204,14 +218,24 @@ void OLED_string(char* string, unsigned char x, unsigned char y, unsigned char f
             OLED_command(VERTICAL); // Vertical adressing mode
 			
             OLED_char(string[i++], FONT_8X16);
-
+        }
+        
+        else if(font == FONT_ARIAL_21X32)
+        {
             OLED_command(PAGEADDR); // set page address
-            OLED_command(0); // start at page 0
-            OLED_command(7); // end at page 7
+            OLED_command(y); // start at page 0
+            OLED_command(y+3); // end at page 3
             OLED_command(MEMORYMODE);
-            OLED_command(HORIZONTAL); // Vertical adressing mode
+            OLED_command(VERTICAL); // Vertical adressing mode
+			
+            OLED_char(string[i++], FONT_ARIAL_21X32);
         }
     }
+    OLED_command(PAGEADDR); // set page address
+    OLED_command(0); // start at page 0
+    OLED_command(7); // end at page 7
+    OLED_command(MEMORYMODE);
+    OLED_command(HORIZONTAL); // Horizontal adressing mode
 }
 
 // 128 columns + 4 rows
