@@ -204,7 +204,8 @@ void generalInit( void )
 
     OLED_stopscroll();
     OLED_clear();
+    OLED_string("100",0,0,FONT_NUMBERS_24X40);
     OLED_string("cm",72,1,FONT_LETTERS_28X32);
-    OLED_pos(65,0); // pour la voiture x de 0 à 65
+    OLED_pos(25,0); // pour la voiture x de 0 à 65
     OLED_bmp(CAR);
 }
