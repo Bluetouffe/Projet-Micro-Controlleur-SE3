@@ -1,7 +1,5 @@
 #include <p18f4520.h>
-#include <htc.h>
 #include "oled.h"
-#include <string.h>
 #include <delays.h>
 
 void I2CInit(void)
@@ -181,15 +179,15 @@ void OLED_char(char character, unsigned char font)
         I2CStop();
     }
     
-    else if(font == FONT_ARIAL_21X32)
+    else if(font == FONT_NUMBERS_21X32)
     {
     	I2CStart();
         I2CSend(I2C_ADDRESS); // Send slave address
         I2CSend(I2C_DATA); // Send data incomming
 
-        for(i=0; i < 32; i++)
+        for(i=0; i < 85; i++)
         {
-            I2CSend(FONT_ARIAL_21x32[(character - 0x30)*21+i]); // only number
+            I2CSend(FONT_NUMBERS_21x32[(character - 0x30)*84+i]); // only number
         }
      
         I2CStop();
@@ -220,7 +218,7 @@ void OLED_string(char* string, unsigned char x, unsigned char y, unsigned char f
             OLED_char(string[i++], FONT_8X16);
         }
         
-        else if(font == FONT_ARIAL_21X32)
+        else if(font == FONT_NUMBERS_21X32)
         {
             OLED_command(PAGEADDR); // set page address
             OLED_command(y); // start at page 0
@@ -228,7 +226,7 @@ void OLED_string(char* string, unsigned char x, unsigned char y, unsigned char f
             OLED_command(MEMORYMODE);
             OLED_command(VERTICAL); // Vertical adressing mode
 			
-            OLED_char(string[i++], FONT_ARIAL_21X32);
+            OLED_char(string[i++], FONT_NUMBERS_21X32);
         }
     }
     OLED_command(PAGEADDR); // set page address
