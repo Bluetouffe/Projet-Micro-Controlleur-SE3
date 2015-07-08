@@ -1,4 +1,4 @@
-/*
+/* 
  * File:   main.c
  * Author: Louis BONICEL
  *
@@ -17,71 +17,68 @@
 
 void main( void )
 {
-    unsigned char i = 0;
-
     generalInit();
-    OLED_bmp(LOGO);
-    Delay1KTCYx(1);
-    OLED_rscroll(0,127);
-
-    for ( i = 0 ; i < 7 ; i++)
-        Delay10KTCYx(25);
-
-    OLED_stopscroll();
-    OLED_clear();
 
     // Variable used to store measured distance
     unsigned int distance = 0;
-    //unsigned int moyenne = 0;
+    unsigned int moyenne = 0;
 
     // nulber of Loop, to emit every numberOfLoopToTransmit loops
     unsigned char numberOfLoop = 0;
     T0CONbits.TMR0ON = 1;               // Enable timer 0
-    signal_pwm = 1;
+    
     // Main loop
     while(1)
     {
-        OLED_string((char *)"Distance : " , 1 , 1 , FONT_8X16);
-        OLED_string((char *)"cm" , 100 , 1 , FONT_8X16);
         startMeasure();                          // Request a measure and store returned value in distance
 
-        SLEEP();                                 // Enter IDLE mode
-        NOP();                                   // This instruction is skipped
-
-        getMeasure(&distance);                   // After capture is done, get value
-
-        if (flag.newBTRequest == 1)
+        while (!flag.timeElapsed)
         {
-            UARTtreatNewRequest();
+            LATD = numberOfLoop;
+            if (flag.newBTRequest)
+                UARTtreatNewRequest();
+
+
+            if (numberOfLoop == 8)
+            {
+                if (flag.enableSendBT)
+                {
+                    moyenne >>= 3;
+                    UARTSendMeasure(moyenne);                  // Send this value through UART
+                }
+                else
+                {
+                    moyenne >>= 3;
+                    createString(moyenne);
+                }
+                OLED_string(messageDistance , 50 , 3 , FONT_8X16);
+                //numberOfLoop = 0;                           // Reset Loop counter
+                moyenne = 0;
+            }
         }
 
-        if (signal_pwm == 1)
+         
+        getMeasure(&distance);                   // After capture is done, get value
+
+
+        if (numberOfLoop == 8)
         {
-            CCP2CON = 0b00000111; // Enable PWM mode
+            numberOfLoop = 0;                           // Reset Loop counter
+            moyenne = 0;
         }
         else
         {
-            CCP2CON = 0b00000000; // Disable PWM mode
+            moyenne += distance;
+            numberOfLoop++;// Increment loop counter
         }
-
-
-        if (flag.enableSendBT == 1)
+        
+        if (flag.enableBuzzer && (!CCP2CON))
         {
-            if (numberOfLoop == numberOfEmission)
-            {
-                //moyenne >>= timeOfEmission;
-                UARTSendMeasure(distance);                  // Send this value through UART
-                OLED_string(messageDistance , 60 , 1 , FONT_8X16);
-                numberOfLoop = 0;                           // Reset Loop counter
-                //moyenne = 0;
-            }
-            else
-            {
-                //moyenne += distance;
-                numberOfLoop++;                             // Increment loop counter
-            }
+            CCP2CON = 0x0F; // Disable PWM mode
         }
-
-        Delay1KTCYx( 25 );
+        else
+        {
+            CCP2CON = 0x00;
+        }
     }
 }
