@@ -58,17 +58,6 @@ void UARTtreatNewRequest( void )
     putsUSART((char*)"\r\n");
     switch ( bufferBTReceive[0] )       // State machine for parameters
     {
-        /*case 0x74:                      // Time between two BT emission "t"
-            timeOfEmission = (bufferBTReceive[1] - 48); // 48 = ASCII 0
-            if (timeOfEmission > 7)
-            {
-                timeOfEmission = 7;
-            }
-            numberOfEmission = 1 << timeOfEmission;
-            LATD = numberOfEmission;
-            UARTEmptyBuffer();
-            flag.enableSendBT = 1;
-            break;*/
         case 0x53: // "S"
             flag.enableSendBT = 1;
             UARTEmptyBuffer();
@@ -80,12 +69,12 @@ void UARTtreatNewRequest( void )
             break;
 
         case 0x42: // "B"
-            flag.enableBuzzer = 1;
+            flag.enableBuzzerBT = 1;
             UARTEmptyBuffer();
             break;
             
         case 0x62: // "b"
-            flag.enableBuzzer = 0;
+            flag.enableBuzzerBT = 0;
             UARTEmptyBuffer();
             break;
 

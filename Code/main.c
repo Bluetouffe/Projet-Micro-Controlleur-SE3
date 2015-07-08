@@ -64,7 +64,6 @@ void main( void )
         if (numberOfLoop == 8)
         {
             numberOfLoop = 0;                           // Reset Loop counter
-            moyenne = 0;
         }
         else
         {
@@ -72,7 +71,7 @@ void main( void )
             numberOfLoop++;// Increment loop counter
         }
         
-        if (flag.enableBuzzer && (!CCP2CON))
+        if (flag.enableBuzzer && flag.enableBuzzerBT)
         {
             CCP2CON = 0x0F; // Disable PWM mode
         }
@@ -80,5 +79,6 @@ void main( void )
         {
             CCP2CON = 0x00;
         }
+
     }
 }

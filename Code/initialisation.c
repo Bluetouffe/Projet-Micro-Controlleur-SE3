@@ -92,14 +92,15 @@ void PWMInit( void )
     CCP2CON = 0x00;
 
     flag.enableBuzzer = 1;
+    flag.enableBuzzerBT = 1;
 }
 
 void resetTMR3( void )
 {
     T3CONbits.TMR3ON=0;         // Stop timer1
 
-    TMR3H = 0xD8;
-    TMR3L = 0xF0;
+    TMR3H = 0x9E;
+    TMR3L = 0x58;
 
     T3CONbits.TMR3ON=1;         // Start timer1
 }
@@ -134,12 +135,13 @@ void captureTimer1Init( void )
 
 void Timer3Init( void )
 {
-    T3CON	= 0x01;
-    PIR2bits.TMR3IF = 0;
-    TMR3H	= 0xD8;
-    TMR3L	= 0xF0;
+    T3CON = 0x01;
+    TMR3IF = 0;
+    TMR3H = 0x9E;
+    TMR3L = 0x58;
 
     INTCON = 0xC0;
+
 
     resetTMR3();
 }
@@ -187,12 +189,9 @@ void generalInit( void )
     // Init Oled
     OLED_Init();
 
-
-    OLED_clear();
-    Delay1KTCYx(1);
     OLED_bmp(LOGO);
     Delay1KTCYx(1);
-    OLED_rscroll();
+    OLED_rscroll(0,7);
 
     unsigned char i = 0;
 
