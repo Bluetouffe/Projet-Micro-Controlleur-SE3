@@ -20,7 +20,7 @@ volatile near struct {
     unsigned newBTRequest:1;
     unsigned enableBuzzer:1;
     unsigned timeElapsed:1;
-    unsigned sendReady:1;
+    unsigned sendDone:1;
     unsigned enableBuzzerBT:1;
     unsigned bit7:1;
 } flag;

@@ -100,8 +100,8 @@ void resetTMR3( void )
 {
     T3CONbits.TMR3ON=0;         // Stop timer1
 
-    TMR3H = 0x9E;
-    TMR3L = 0x58;
+    TMR3H = 0x3C;
+    TMR3L = 0xB0;
 
     T3CONbits.TMR3ON=1;         // Start timer1
 }
@@ -138,8 +138,8 @@ void Timer3Init( void )
 {
     T3CON = 0x01;
     TMR3IF = 0;
-    TMR3H = 0x9E;
-    TMR3L = 0x58;
+    TMR3H = 0x3C;
+    TMR3L = 0xB0;
 
     INTCON = 0xC0;
 
@@ -199,7 +199,7 @@ void generalInit( void )
     OLED_Init();
 
     OLED_bmp(LOGO);
-    Delay1KTCYx(1);
+    Delay10KTCYx(100);
     OLED_rscroll(0,7);
 
     unsigned char i = 0;

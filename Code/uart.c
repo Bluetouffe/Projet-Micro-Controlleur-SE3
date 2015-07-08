@@ -21,7 +21,7 @@ void createString( unsigned int distance )
 void UARTSendMeasure(unsigned int distance)
 {
     // This message will be sent first
-    char *messageTXStart = (char*)"Distance = ";
+    char *messageTXStart = (char*)"D = ";
 
     // This one will be the end of the message
     // \n\r is CR LF, an old way to end a line

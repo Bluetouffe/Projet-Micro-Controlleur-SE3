@@ -3,6 +3,7 @@
 #include "initialisation.h"
 #include "globalVariables.h"
 
+
 void interrupt ISR(void)
 {
     if (CCP1IF)                     // Test for Capture interrupt
@@ -23,8 +24,8 @@ void interrupt ISR(void)
         flag.timeElapsed = 1;
         PIR2bits.TMR3IF = 0;
         
-        TMR3H = 0x9E;
-        TMR3L = 0x58;
+        TMR3H = 0x3C;
+        TMR3L = 0xB0;
     }
 
     if (RCIF)                                      // Interrupt from UART RX
@@ -65,7 +66,7 @@ void interrupt ISR(void)
             flag.enableBuzzer = 0;
             TMR0H = tableauBuzzer[moyenneFinale][0];         //val distance louis
             TMR0L = tableauBuzzer[moyenneFinale][1];
-            TMR0ON = 1;                 // Disable timer 0
+            TMR0ON = 1;                 // Enable timer 0
         }
     }
 }

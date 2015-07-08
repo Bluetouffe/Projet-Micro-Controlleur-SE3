@@ -31,41 +31,41 @@ void main( void )
     // Main loop
     while(1)
     {
+        LATDbits.LATD1 = 1;
         startMeasure();                          // Request a measure and store returned value in distance
-
         while (!flag.timeElapsed)
-        {
-            LATD = numberOfLoop;
+        {             
             if (flag.newBTRequest)
                 UARTtreatNewRequest();
+            
 
-
-            if (numberOfLoop == 8)
+            if (numberOfLoop == 7)
             {
-                moyenne >>= 3;
-                moyenneFinale = moyenne;
-                if (flag.enableSendBT)
+                moyenneFinale = moyenne >> 3;
+                if (flag.enableSendBT && !flag.sendDone)
                 {
                     UARTSendMeasure(moyenneFinale);                  // Send this value through UART
+                    flag.sendDone = 1;
                 }
                 else
                 {
                     createString(moyenneFinale);
                 }
                 OLED_string(messageDistance , 50 , 3 , FONT_8X16);
+                
                 //numberOfLoop = 0;                           // Reset Loop counter
                 moyenne = 0;
             }
             CLRWDT();
         }
-
          
         getMeasure(&distance);                   // After capture is done, get value
 
 
-        if (numberOfLoop == 8)
+        if (numberOfLoop == 7)
         {
             numberOfLoop = 0;                           // Reset Loop counter
+            flag.sendDone = 0;
         }
         else
         {
@@ -75,12 +75,13 @@ void main( void )
         
         if (flag.enableBuzzer && flag.enableBuzzerBT)
         {
-            CCP2CON = 0x0F; // Disable PWM mode
+            CCP2CON = 0x0F; // Enable PWM mode
         }
         else
         {
             CCP2CON = 0x00;
         }
         CLRWDT();
+        LATDbits.LATD1 = 0;
     }
 }
