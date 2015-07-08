@@ -13,7 +13,7 @@
 #pragma config WRT2=OFF, WRT3=OFF, WRTB=OFF, WRTC=OFF, WRTD=OFF
 #pragma config EBTR0=OFF, EBTR1=OFF, EBTR2=OFF, EBTR3=OFF
 #pragma config EBTRB=OFF
-#pragma config WDTEN=OFF, WDTPS=0x07
+#pragma config WDTEN=OFF, WDTPS=0x09
 
 
 #include "p18f45K20.h"
@@ -197,18 +197,14 @@ void generalInit( void )
     PWMInit();
     // Init Oled
     OLED_Init();
-
     OLED_bmp(LOGO);
-    Delay10KTCYx(100);
     OLED_rscroll(0,7);
 
-    unsigned char i = 0;
-
-    for ( i = 0 ; i < 7 ; i++)
-        Delay10KTCYx(25);
+    Delay10KTCYx(90); // 10ms*90=900ms
 
     OLED_stopscroll();
     OLED_clear();
-    OLED_string((char *)"Distance : " , 1 , 1 , FONT_8X16);
-    OLED_string((char *)"cm" , 100 , 3 , FONT_8X16);
+    OLED_string("cm",72,1,FONT_LETTERS_28X32);
+    OLED_pos(65,0); // pour la voiture x de 0 à 65
+    OLED_bmp(CAR);
 }
