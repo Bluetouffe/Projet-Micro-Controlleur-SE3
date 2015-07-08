@@ -6,13 +6,14 @@
  */
 // Configuration Registers
 #pragma config FOSC=INTIO7, FCMEN=OFF, IESO=OFF, PWRT=OFF, BOREN=OFF
-#pragma config BORV=30, WDTEN=OFF, WDTPS=1, MCLRE=ON, HFOFST=ON
+#pragma config BORV=30, MCLRE=ON, HFOFST=ON
 #pragma config LPT1OSC=OFF, PBADEN=OFF, CCP2MX=PORTBE, STVREN=OFF
 #pragma config LVP=OFF, XINST=OFF, CP0=OFF, CP1=OFF, CP2=OFF
 #pragma config CP3=OFF, CPB=OFF, CPD=OFF, WRT0=OFF, WRT1=OFF
 #pragma config WRT2=OFF, WRT3=OFF, WRTB=OFF, WRTC=OFF, WRTD=OFF
 #pragma config EBTR0=OFF, EBTR1=OFF, EBTR2=OFF, EBTR3=OFF
 #pragma config EBTRB=OFF
+#pragma config WDTEN=OFF, WDTPS=0x07
 
 
 #include "p18f45K20.h"
@@ -79,8 +80,8 @@ void PWMInit( void )
 
     // PWM output setup (CCP2 on RB3)
     CCP2CON = 0b00001111;               // Disable PWM
-    PR2 = 0b00100011;                   // Initial frequency of 440Hz.
-    CCPR2L = 0x0F;                      // Volume buzzer
+    PR2 = 0b00010000;                   // Initial frequency of 440Hz.
+    CCPR2L = 0b00001111;                      // Volume buzzer
     PIR1bits.TMR2IF = 0;
     T2CON = 0b00000110;                 // TMR2=> prescaler = 4
                                         // f = (TMR2)*4*TOSC*PR2 = 435Hz
@@ -163,15 +164,23 @@ void interruptInit( void )
     PIE1bits.RCIE = 1;          // Enable interrupt from UART Receive
 }
 
-void watchDogInit( void )
+void watchDogDisable( void )
 {
-    
+    CLRWDT();
+    SWDTEN = 0;
+}
+
+void watchDogEnable( void )
+{
+    SWDTEN = 1;
 }
 
 void generalInit( void )
 {
     // Init clock at 1MHz
     ClockInit();
+    // Disable timer while init
+    watchDogDisable();
     // Set IO pins to desired configuration
     IOInit();
     // Init I2C
@@ -202,6 +211,4 @@ void generalInit( void )
     OLED_clear();
     OLED_string((char *)"Distance : " , 1 , 1 , FONT_8X16);
     OLED_string((char *)"cm" , 100 , 3 , FONT_8X16);
-
-    watchDogInit();
 }

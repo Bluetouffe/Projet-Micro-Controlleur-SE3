@@ -13,6 +13,8 @@ extern "C" {
 #endif
 
 void ClockInit( void );
+void watchDogDisable( void );
+void watchDogEnable( void );
 void IOInit( void );
 void UARTInit( void );
 void PWMCCP2init( void );

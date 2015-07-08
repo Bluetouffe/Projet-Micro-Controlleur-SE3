@@ -63,8 +63,8 @@ void interrupt ISR(void)
         {
             TMR0ON = 0;                 // Disable le timer 0
             flag.enableBuzzer = 0;
-            TMR0H = 0xFF;         //val distance louis
-            TMR0L = 0x00;
+            TMR0H = tableauBuzzer[moyenneFinale][0];         //val distance louis
+            TMR0L = tableauBuzzer[moyenneFinale][1];
             TMR0ON = 1;                 // Disable timer 0
         }
     }

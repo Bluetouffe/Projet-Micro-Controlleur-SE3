@@ -18,6 +18,7 @@
 void main( void )
 {
     generalInit();
+    CLRWDT();
 
     // Variable used to store measured distance
     unsigned int distance = 0;
@@ -26,7 +27,7 @@ void main( void )
     // nulber of Loop, to emit every numberOfLoopToTransmit loops
     unsigned char numberOfLoop = 0;
     T0CONbits.TMR0ON = 1;               // Enable timer 0
-    
+    watchDogEnable();
     // Main loop
     while(1)
     {
@@ -41,20 +42,21 @@ void main( void )
 
             if (numberOfLoop == 8)
             {
+                moyenne >>= 3;
+                moyenneFinale = moyenne;
                 if (flag.enableSendBT)
                 {
-                    moyenne >>= 3;
-                    UARTSendMeasure(moyenne);                  // Send this value through UART
+                    UARTSendMeasure(moyenneFinale);                  // Send this value through UART
                 }
                 else
                 {
-                    moyenne >>= 3;
-                    createString(moyenne);
+                    createString(moyenneFinale);
                 }
                 OLED_string(messageDistance , 50 , 3 , FONT_8X16);
                 //numberOfLoop = 0;                           // Reset Loop counter
                 moyenne = 0;
             }
+            CLRWDT();
         }
 
          
@@ -79,6 +81,6 @@ void main( void )
         {
             CCP2CON = 0x00;
         }
-
+        CLRWDT();
     }
 }
