@@ -15,12 +15,13 @@
 #pragma config EBTRB=OFF
 #pragma config WDTEN=OFF, WDTPS=0x09
 
-
 #include "p18f45K20.h"
 #include <usart.h>
 #include "initialisation.h"
 #include "globalVariables.h"
 #include "oled.h"
+
+
 
 void ClockInit( void )
 {
@@ -79,9 +80,9 @@ void PWMInit( void )
     TMR0L = 0b11111110;                 // nombre de comptage pour periode off val distance
 
     // PWM output setup (CCP2 on RB3)
-    CCP2CON = 0b00111111;               // Disable PWM
+    CCP2CON = DEFAULT_CCP2CON_VALUE;               // Disable PWM
     PR2 = 0b00010000;                   // Initial frequency of 440Hz.
-    CCPR2L = 0b00001111;                      // Volume buzzer
+    CCPR2L = DEFAULT_CCPR2L_VALUE;                      // Volume buzzer
     PIR1bits.TMR2IF = 0;
     T2CON = 0b00000110;                 // TMR2=> prescaler = 4
                                         // f = (TMR2)*4*TOSC*PR2 = 435Hz

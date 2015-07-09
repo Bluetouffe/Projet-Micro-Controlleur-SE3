@@ -25,6 +25,8 @@ void main( void )
 
     // nulber of Loop, to emit every numberOfLoopToTransmit loops
     unsigned char numberOfLoop = 0;
+    unsigned char posVoiture = 0;
+    unsigned char posVoiturePrecedente = 0;
     T0CONbits.TMR0ON = 1;               // Enable timer 0
     watchDogEnable();
     // Main loop
@@ -48,8 +50,15 @@ void main( void )
 
             OLED_clear();
             OLED_string(messageDistance,0,0,FONT_NUMBERS_24X40);
-            OLED_pos((64-(distance>>2)),0); // pour la voiture x de 0 à 65
-            OLED_bmp(CAR);
+            
+            posVoiturePrecedente = posVoiture;
+            posVoiture = 64 - (distance >> 2);
+
+//            if (posVoiturePrecedente != posVoiture)
+//            {
+                OLED_pos(posVoiture,0); // pour la voiture x de 0 à 65
+                OLED_bmp(CAR);
+//            }
         }
          
         getMeasure(&distance);                   // After capture is done, get value

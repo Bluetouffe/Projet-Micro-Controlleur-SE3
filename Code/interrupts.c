@@ -14,7 +14,7 @@ void interrupt ISR(void)
             TMR0ON = 0;                 // Disable timer 0
             flag.enableBuzzer = 1;
             PR2 = tableauTonaliteBuzzer[distance];
-            CCP2CON = 0x0F;
+            CCP2CON = DEFAULT_CCP2CON_VALUE;
             TMR0H = 0xFF;         //val distance fixe ON 200ms
             TMR0L = 0xF0;         //val distance fixe ON 200ms
             TMR0ON = 1;                 // Enable timer 0
