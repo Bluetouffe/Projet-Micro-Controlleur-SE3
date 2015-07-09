@@ -21,8 +21,7 @@ void main( void )
     CLRWDT();
 
     // Variable used to store measured distance
-    unsigned int distance = 0;
-    unsigned int moyenne = 0;
+    // unsigned int distance = 0;
 
     // nulber of Loop, to emit every numberOfLoopToTransmit loops
     unsigned char numberOfLoop = 0;
@@ -31,61 +30,42 @@ void main( void )
     // Main loop
     while(1)
     {
-        LATDbits.LATD1 = 1;
         startMeasure();                          // Request a measure and store returned value in distance
-        while (!flag.timeElapsed)
-        {             
-            if (flag.newBTRequest)
-                UARTtreatNewRequest();
-            
+        
+        if (flag.newBTRequest)
+            UARTtreatNewRequest();
 
-            if (numberOfLoop == 7)
+        if (numberOfLoop == 5)
+        {
+            if (flag.enableSendBT)
             {
-                moyenneFinale = moyenne >> 3;
-                if (flag.enableSendBT && !flag.sendDone)
-                {
-                    UARTSendMeasure(moyenneFinale);                  // Send this value through UART
-                    flag.sendDone = 1;
-                }
-                else
-                {
-                    createString(moyenneFinale);
-                }
-
-                OLED_clear();
-                OLED_string(messageDistance,0,0,FONT_NUMBERS_24X40);
-                OLED_pos(distance/4,0); // pour la voiture x de 0 à 65
-                OLED_bmp(CAR);
-                
-                //numberOfLoop = 0;                           // Reset Loop counter
-                moyenne = 0;
+                UARTSendMeasure(distance);                  // Send this value through UART
             }
-            CLRWDT();
+            else
+            {
+                createString(distance);
+            }
+
+            OLED_clear();
+            OLED_string(messageDistance,0,0,FONT_NUMBERS_24X40);
+            OLED_pos(distance>>2,0); // pour la voiture x de 0 à 65
+            OLED_bmp(CAR);
         }
          
         getMeasure(&distance);                   // After capture is done, get value
 
 
-        if (numberOfLoop == 7)
+        if (numberOfLoop == 5)
         {
             numberOfLoop = 0;                           // Reset Loop counter
-            flag.sendDone = 0;
         }
         else
         {
-            moyenne += distance;
             numberOfLoop++;// Increment loop counter
         }
-        
-        if (flag.enableBuzzer && flag.enableBuzzerBT)
-        {
-            CCP2CON = 0x0F; // Enable PWM mode
-        }
-        else
-        {
-            CCP2CON = 0x00;
-        }
+
+        Delay1KTCYx(5);
+
         CLRWDT();
-        LATDbits.LATD1 = 0;
     }
 }

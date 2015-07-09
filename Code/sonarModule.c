@@ -47,7 +47,6 @@ void startMeasure( void )
     }
     MB1010_EN_PIN = 0;              // Input is HIGH, measure as started, lower trigger pin
     resetTMR1();                    // When input is HIGH, start timer
-    resetTMR3();
 }
 
 void getMeasure(unsigned int * distance)

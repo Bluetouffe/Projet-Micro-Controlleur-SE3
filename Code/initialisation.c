@@ -79,7 +79,7 @@ void PWMInit( void )
     TMR0L = 0b11111110;                 // nombre de comptage pour periode off val distance
 
     // PWM output setup (CCP2 on RB3)
-    CCP2CON = 0b00001111;               // Disable PWM
+    CCP2CON = 0b00111111;               // Disable PWM
     PR2 = 0b00010000;                   // Initial frequency of 440Hz.
     CCPR2L = 0b00001111;                      // Volume buzzer
     PIR1bits.TMR2IF = 0;
@@ -134,19 +134,6 @@ void captureTimer1Init( void )
     CCP1CON = 0x04;
 }
 
-void Timer3Init( void )
-{
-    T3CON = 0x01;
-    TMR3IF = 0;
-    TMR3H = 0x3C;
-    TMR3L = 0xB0;
-
-    INTCON = 0xC0;
-
-
-    resetTMR3();
-}
-
 void interruptInit( void )
 {
     //RCONbits.IPEN = 1;          // Enable priority in interrupts
@@ -157,7 +144,6 @@ void interruptInit( void )
     //INTCONbits.GIEL = 1;         // Enable general interrupts
     //INTCONbits.GIEH = 1;
     INTCONbits.TMR0IE = 1;      // Enable interrupts from Timer 0
-    PIE2bits.TMR3IE = 1;        // Enable interrupts from Timer 3
     //INTCON2bits.TMR0IP = 1;     // High pririty interrupt from Timer 0
 
     PIE1bits.CCP1IE = 1;        // Enable interrupt from Capture module 1
@@ -186,10 +172,8 @@ void generalInit( void )
     // Init I2C
     I2CInit();
     // Init CCP1 in capture mode with Timer1
-    captureTimer1Init();
-    // Init for Timer 3
-    Timer3Init();
-    // Init UART for 1200b 8N1
+    captureTimer1Init();;
+    // Init UART for 2400bds 8N1
     UARTInit();
     // Init interrupts
     interruptInit();
@@ -204,8 +188,8 @@ void generalInit( void )
 
     OLED_stopscroll();
     OLED_clear();
-    OLED_string("100",0,0,FONT_NUMBERS_24X40);
-    OLED_string("cm",72,1,FONT_LETTERS_28X32);
+    OLED_string((char*)"100",0,0,FONT_NUMBERS_24X40);
+    OLED_string((char*)"cm",72,1,FONT_LETTERS_28X32);
     OLED_pos(25,0); // pour la voiture x de 0 à 65
     OLED_bmp(CAR);
 }
