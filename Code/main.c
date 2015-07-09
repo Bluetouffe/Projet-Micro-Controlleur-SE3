@@ -48,7 +48,7 @@ void main( void )
 
             OLED_clear();
             OLED_string(messageDistance,0,0,FONT_NUMBERS_24X40);
-            OLED_pos(distance>>2,0); // pour la voiture x de 0 à 65
+            OLED_pos((64-(distance>>2)),0); // pour la voiture x de 0 à 65
             OLED_bmp(CAR);
         }
          
